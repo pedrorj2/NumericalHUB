@@ -69,7 +69,7 @@ do while (option>0)
      write(*,*) " "
      
      !read(*,*)
-     !read(*,*) option
+     read(*,*) option
 
      !option = 11
      write(*,*) " "
