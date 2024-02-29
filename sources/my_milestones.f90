@@ -1,4 +1,3 @@
-
 module my_milestones
 
         use dislin 
@@ -28,16 +27,77 @@ module my_milestones
 
 
 subroutine  milestone_examples
+integer :: optionmilestone
+real :: p1, p2
 
+     call random_seed ()
+     call random_number (p1)
+     call random_number (p2)
+     
+     ! Sólo usar el comando de arriba una vez
+     ! Apuntar dichos valores y mantenerlos ya el resto del tiempo
 
-      call Milestone1_2A
-      call Milestone2B
-      call Milestone3
-      call Milestone4
-      call Milestone5 
-      call Milestone6 
-      call Milestone7
- 
+      !p1 = 
+      !p2 =
+     
+     !write(*,*) " ================= Your numbers p1 & p2 are: =================== " 
+     !write(*,*) " "
+     !write(*,*) " Number p1 = ", p1 
+     !write(*,*) " Number p2 = ", p2
+     !write(*,*) " "
+     write(*,*) " =============================================================== " 
+     write(*,*) " ==================== Select a Milestone: ====================== "
+     write(*,*) " =============================================================== "
+     write(*,*) " "
+     write(*,*) " 0. Exit/quit "
+     write(*,*) " 1. Milestone 1_2A "
+     write(*,*) " 2. Milestone 2B " 
+     write(*,*) " 3. Milestone 3 "
+     write(*,*) " 4. Milestone 4 "
+     write(*,*) " 5. Milestone 5 "
+     write(*,*) " 6. Milestone 6 "
+     write(*,*) " 7. Milestone 7 "
+     write(*,*) " "
+     
+     read(*,*) optionmilestone
+     write(*,*) " "
+     
+     
+     select case(optionmilestone)
+         
+     case(1)
+       call Milestone1_2A  
+         
+     case(2)   
+       call Milestone2B
+         
+     case(3) 
+       call Milestone3 
+       
+     case(4)
+       call Milestone4 
+      
+     case(5) 
+       call Milestone5  
+      
+     case(6) 
+       call Milestone6 
+       
+     case(7) 
+
+       call Milestone7
+       
+    case default
+          write(*,*) " Case not implemented" 
+              
+     end select 
+    
+     write(*,*) " " 
+     write(*,*) " =============================================================== "
+     write(*,*) " "  
+     write(*,*) " Press any key to go Home " 
+     read(*,*)
+              
 end subroutine
 
 
@@ -49,44 +109,275 @@ end subroutine
 !* Milestone 1 y 2A
 !***********************************************************
 subroutine Milestone1_2A 
+
+ ! Usamos la N que nos pidan en el enunciado
+ ! Usamos una M razonablemente grande para evitar errores adicionales.
+ integer, parameter :: N=20, M=10000
  
- integer, parameter :: N=10, M=400 
- real :: x(0:N), f(0:N)    ! N+1 given points
-                           ! M+1 interpolated points 
- real :: I_N(0:N, 0:M), fe(0:2, 0:M), Error(0:2, 0:M) 
+ real :: xp1, xp2, xi, p1, p2, comodin
+ integer :: x_ev1, x_ev2, x_ev3, x_ev4
+ real :: x(0:N), f(0:N), g(0:N)     ! N+1 given points
+                                    ! M+1 interpolated points
+ 
+ real :: I_N_f(0:N, 0:M), fe(0:2, 0:M), Error_fe(0:2, 0:M) !f funciton
+ real :: I_N_g(0:N, 0:M), ge(0:2, 0:M), Error_ge(0:2, 0:M) !g funciton
+ 
  real :: Lebesgue_N(-1:N, 0:M),  PI_N(0:N, 0:M)    
- real :: xp(0:M), a=-1, b=1, theta(0:N), alpha     
+ real :: xp(0:M), a=-1, b=1, theta(0:N), theta2(0:M), alpha     
  integer :: i  
  
- x  = [ (a + (b-a)*i/N, i=0, N) ] ! N+1 points
- theta  = [ (PI*i/N, i=0, N) ]
- x = -cos( theta ) 
+ !! ============================= Números aleatorios =============================
+ 
+   
+ 
+   
+ 
+    write(*,*) " =============================================================== " 
+    write(*,*) " ============== You have selected Milestone 1&2A =============== " 
+    write(*,*) " =============================================================== " 
+    write(*,*) " "
+    write(*,*) " ============ Press enter for Milestone 1&2A results =========== " 
+    read(*,*) 
+    write(*,*) " Number N = ", N
+    write(*,*) " Number M = ", M
+    write(*,*) " "
+    write(*,*) " =============================================================== " 
+    write(*,*) " "
+
+ 
+ 
+    
+ ! ============================= Puntos de interpolación =============================
+ 
+ ! Nos dirán: Interpolación polinómica global a partir de los puntos interpolación siguientes:
+ ! Vendrá expresado con una expresión tal que x_j = ...
+ ! Ahí necesitamos meter la expresión que sea, es muy común cos(...)
+ 
+ ! Aquí en theta el argumento de dicho cos(...)
+ ! Pueden jugar con llamarlos de las diferentes maneras comentadas más abajo
+ ! Pueden pedirnos un valor para una theta distinta a la dada para un sólo apartado
+    
+ !theta  = [ (PI*i/N, i=0, N) ] !Chebyshev - Gauss - Lobato (extremos)
+ 
+ !theta = [ ((2*i+1)*PI/(2*N+2), i=0, N) ] !Chebyshev - Gauss (ceros)
+ 
+ !theta = [((2*PI*(1+p1)*i)/(2*N*(1+p1)+p2), i = 0, N)]
+ 
+ theta = [((2*PI*i)/(2*N+1), i = 0,N)]
+ 
+ ! Puede no ser cos(...) pero bueno, es lo más normal.
+ ! Como contra ejemplo está el Hito 1 (distribución de puntos comentada a continuación)
+ 
+ !x  = [ (a + (b-a)*i/N, i=0, N) ] ! N+1 points
+ 
+ x = cos( theta ) 
+ 
+! También puede ser una función a trozos
+! do i = 0,N
+!  if(i>N/2) then
+!  xi = a + (b-a)*i/N
+!  else
+!  xi = a + ((b-a)*i/N)**2
+!  end if
+!  x(i) = xi
+! end do
+! 
+!write(*,*) "A trozos: x = ", x
+ 
+ !!  ============================= Expresión xp ============================= 
+ 
+ !theta2  = [ (PI*i/M, i=0, M) ] !Chebyshev - Gauss - Lobato (extremos)
+ 
+ !theta2 = [ ((2*i+1)*PI/(2*M+2), i=0, M) ] !Chebyshev - Gauss (ceros)
+ 
+ !theta2 = [((2*PI*(1+p1)*i)/(2*M*(1+p1)+p2), i = 0, M)]
+ 
+ theta2 = [ (2*i*PI/(2*M+1), i=0, M) ]
+ 
+ 
+ !xp = [ (a + (b-a)*i/M, i=0, M) ] ! M+1 points (equispaciado)
+  xp = cos( theta2 )
   
- xp = [ (a + (b-a)*i/M, i=0, M) ] ! M+1 points
  
- ! Runge function 1/(1+25x**2)  = 1/2 [ 1/(1+5xi) + 1/(1-5xi) ]
- ! d^nf/dx^n = n!  (5i)**n [ (-1)**n (1+5xi)**(-n)  + (1-5xi)**(-n) ] / 2 
- f = 1/( 1 + 25*x**2)  
- !f = sin ( PI * x ) 
+ !!  ============================= Funciones a estudiar =============================
  
- I_N = Interpolant(x, f, N, xp) 
+ 
+ !f = sin ( PI * x )
+ !g = 1/( 1 + 25*x**2) 
+ 
+  f = exp(-x**4)
+  g = tanh(x)
+ 
+ 
+ !! ============================= Interpolantes =============================
+  
+ I_N_f = Interpolant(x, f, N, xp)
+ I_N_g = Interpolant(x, g, N, xp)
+ 
+ ! No tocar esto
  Lebesgue_N = Lebesgue_functions( x, xp ) 
  PI_N = PI_error_polynomial( x, xp ) 
  
- fe(0,:)  = 1/( 1 + 25*xp**2) 
- fe(1,:) =  -50 * xp / (1 + 25*xp**2)**2  
- fe(2,:) =  -50  / (1 + 25*xp**2)**2  +(50 * xp)**2 / (1 + 25*xp**2)**2  
+        
+ 
+ !!  ============================= Funciones y derivadas =============================
+ 
+ ! Spoiler, esto no nos hace falta, sólo vamos a necesitar fe(0,:) y ge(0,:)
+ ! En ningún examen de este año 2022/23 ha hecho falta.
+ ! fe(1-2,:) y ge(1-2,:) para sacar el error de las derivadas con el interpolante derivado
  
  !fe(0,:) =  sin ( PI * xp ) 
+  fe(0,:) = exp(-xp**4)
  !fe(1,:) =  PI * cos ( PI * xp )
  !fe(2,:) =  -PI**2 * sin ( PI * xp ) 
  
- Error = fe - I_N(0:2, :)  
+ !ge(0,:)= 1/( 1 + 25*xp**2) 
+  ge(0,:) =  tanh(xp)
+ !ge(1,:) =  -50 * xp / (1 + 25*xp**2)**2  
+ !ge(2,:) =  -50  / (1 + 25*xp**2)**2  +(50 * xp)**2 / (1 + 25*xp**2)**2  
  
- write(*,*) " Plot results of milestone 1 y 2A " 
- write(*,*) " press enter "
- read(*,*) 
- call plot1
+
+ 
+ Error_fe = fe - I_N_f(0:2, :)
+ Error_ge = ge - I_N_g(0:2, :) 
+ 
+ 
+ 
+ !! ============================= Valores xp de estudio =============================
+ 
+ ! xev es la i con la que consigues el xp del enunciado, la buscamos con lo siguiente:
+ ! Ejemplo: Valor del error de interpolación de la función f en x = 0,2 + p2
+ ! Usaré xp1 = 0.2+p2, saco su sorrespondiente x_ev1 para poder usarlo luego en las diferentes llamadas a las funciones.
+ 
+ 
+ !xp1 = -0.90625
+ !xp1 = -0.99375
+ xp1 = -0.75
+ xp2 = 0.55
+ 
+  
+ 
+  !x_ev1 = (xp1 - a)*M/(b-a) !Equispaciada
+  !x_ev1 = int(((acos(xp1)*M )/PI)) !Chebyshev - Gauss - Lobato (extremos)
+  !x_ev1 = int((((acos(xp1)*(2*M+2))/PI)-1)/2) !Chebyshev - Gauss (ceros)
+   x_ev1 = int(((acos(xp1)*(2*M+1))/(2*PI)))
+   x_ev2 = int(((acos(xp2)*(2*M+1))/(2*PI)))
+ 
+ write(*,*) " ===================== Numerical results ======================= " 
+ write(*,*) " " 
+   
+  write(*,*) " xp1 =  ", xp1 
+  write(*,*) " xp2 =  ", xp2 
+  
+ !write(*,*) " =================== Funciones f y g =================== "
+ write(*,*) " "
+ !! Valor funcion f en x = xp1
+ !write(*,*) " f en xp1 = ", fe(0,x_ev1)
+ !! Valor funcion f en x = xp1
+ !write(*,*) " g en xp1 = ", ge(0,x_ev1)
+ !write(*,*) " "
+ !write(*,*) " ========================= Errores ============================= "
+ !write(*,*) " "
+ !! Error de interolación de f(x) en x = xp1
+ !write(*,*) " E_f(x) en xp1 = ", Error_fe(0,x_ev1)
+ !! Error de interolación de g(x) en x = xp1
+ !write(*,*) " E_g(x) en xp1 = ", Error_ge(0,x_ev1)
+ !
+ !! Valor máximo del error de interpolación de f(x)
+ !write(*,*) " Error_f(x) max =", maxval(Error_fe(0,:))
+ !! Valor máximo del error de interpolación de g(x)
+ !write(*,*) " Error_g(x) max =", maxval(Error_ge(0,:))
+ !
+ !! Posición de x donde E_f(x) es máximo
+ !write(*,*) " x para E_f(x) max =", maxloc(Error_fe(0,:))
+ !! Posición de x donde E_g(x) es mínimo
+ !write(*,*) " x para E_g(x) min =", minloc(Error_ge(0,:))
+ !write(*,*) " "
+ !write(*,*) " =================== Funciones PI y Lebesgue =================== "
+ !write(*,*) " "
+ !! Valor funcion de Lebesgue Landa_(N) en x = xp1
+ !write(*,*) " Lebesgue Landa_(N) en xp2 = ", Lebesgue_N(0,x_ev2)
+ !! Valor constante de Lebesgue Landa_(N)
+ !write(*,*) " Constante de Lebesgue(x) (max) =", maxval(abs(Lebesgue_N(0,:))) 
+ !! Posición x_max del max. de la función de Lebesgue
+ !write(*,*) " xmax de Lebesgue(x) max =", maxval(a+(b-a)*maxloc(abs(Lebesgue_N(0,:)))/M)
+ !write(*,*) " "
+ !! Valor de la función PI_(N+1) en x = xp1
+ !write(*,*) " PI(x) en xp1", PI_N(0,x_ev1)
+ !! Valor máximo de la función PI_(N+1)
+ !write(*,*) " PI(x) Max. = ", maxval((PI_N(0,:)))
+ !! Posición x_min del valor max. PI (N+1)
+ !write(*,*) " xmax de PI(x) max =", maxval(a +(b-a)*maxloc(abs(PI_N(0,:)))/M)
+ ! write(*,*) " "
+ !write(*,*) " ==================== Valores interpolantes ==================== "
+ !write(*,*) " "
+ !! Valor del interpolante de la función f en x = xp1
+ !write(*,*) " I_N_f(x) en xp1 = ", I_N_f(0,x_ev1)
+ !! Valor del interpolante de la función g en x = xp1
+ !write(*,*) " I_N_g(x) en xp1 = ", I_N_g(0,x_ev1)
+ !
+ !! Valor de la derivada primera del interpolante de la función f en x = xp1
+ !write(*,*) " I_N_f'(x) en xp1 = ", I_N_f(1,x_ev1)
+ !! Valor de la derivada primera del interpolante de la función g en x = xp2
+ !write(*,*) " I_N_g'(x) en xp1 = ", I_N_g(1,x_ev1)
+ !
+ !!! Error de interpolación de f'(x) en x = xp1
+ !!write(*,*) " E_f'(x) en xp1 = ", Error_fe(1,x_ev1)
+ !!! Error de interpolación de g'(x) en x = xp1
+ !!write(*,*) " E_g'(x) en xp1 = ", Error_ge(1,x_ev1)
+ !
+ !write(*,*) " "
+ !write(*,*) " ==================== Extras ==================== "
+ !write(*,*) " "
+ !
+ ! comodin = Interpolated_value(xp,I_N_f(0,:),xp1,N)  !interpolante en el punto tambien
+ ! write(*,*) "Interpolante con Interpolated_value:", comodin
+ ! 
+ ! comodin = Interpolated_value(xp,I_N_f(1,:),xp1,N)     !primera derivada interpolante
+ ! write(*,*) "Interpolante primera derivada con Interpolated_value:", comodin
+ !
+ ! comodin = Interpolated_value(xp,Lebesgue_N(0,:),xp1,N)  !lebesgue en el punto
+ ! write(*,*) "Lebesgue con Interpolated_value:", comodin
+ !
+ ! comodin = Interpolated_value(xp,PI_N(0,:),xp1,N)    ! pi en el punto
+ ! write(*,*) "PI con Interpolated_value:", comodin
+
+ !write(*,*) " 1. Interpolation error [f(x)-In] = ", Error(0,x_ev)
+ !write(*,*) " 3. Valor cte de Lebesgue para extremos de Chebyshev / Valor máximo de la función de Lebesgue: ",maxval(abs(Lebesgue_N(0,:)))
+ !write(*,*) " 4. Posición x_max del max. de la función de Lebesgue: ", maxval(a + (b-a)*maxloc(abs(Lebesgue_N(0,:)))/M)
+ !write(*,*) " 5. Valor max. del error de interpolación [f(x)-In] = ", maxval(Error(0,:))
+ !write(*,*) " 7. Valor max. de la funcion PI (N+1) = ", maxval(PI_N(0,:))
+ !write(*,*) " 8. Posición x_min del valor max. PI (N+1) = ", maxloc(PI_N(0,:))
+ !write(*,*) " 9. Valor de la funcion PI (N+1) en x=0.765 = ", PI_N(0,:)
+ !write(*,*) " 10. Valor de la funcion de Lebesgue en x=0.765 = ", Lebesgue_N(0,:)
+ 
+write(*,*) " 1. PI(x) Max. = ", maxval((PI_N(0,:)))
+ write(*,*) " "
+write(*,*) " 2. xmax de PI(x) max = ", maxval(a +(b-a)*maxloc(abs(PI_N(0,:)))/M)
+ write(*,*) " "
+write(*,*) " 3. PI(x) en xp1 = ", PI_N(0,x_ev1)
+ write(*,*) " "
+write(*,*) " 4. Lebesgue Landa_(N) en xp2 = ", Lebesgue_N(0,x_ev2)
+ write(*,*) " "
+write(*,*) " 5. Constante de Lebesgue(x) (max) = ", maxval(abs(Lebesgue_N(0,:))) 
+ write(*,*) " "
+write(*,*) " 6. Error_f(x) max = ", maxval(Error_fe(0,:))
+ write(*,*) " "
+write(*,*) " 7. Error_g(x) max = ", maxval(Error_ge(0,:))
+
+ !write(*,*) " 8. Error_f(x) max (Equispaciada) = ", maxval(Error_fe(0,:))
+ 
+ !write(*,*) " 9. Error_g(x) max (Extremos de Chebyshev) = ", maxval(Error_ge(0,:))
+ 
+ !write(*,*) " 10. Constante de Lebesgue(x) (max) (Extremos de Chebyshev) = ", maxval(abs(Lebesgue_N(0,:))) 
+ 
+ !write(*,*) " "
+ !write(*,*) " ======================== Plot results ========================= "
+ !write(*,*) " "
+ !write(*,*) " Plot results of milestone 1 y 2A " 
+ !write(*,*) " Press enter "
+ !read(*,*) 
+ !call plot1
  
  
 contains 
@@ -103,12 +394,15 @@ subroutine plot1
   
   call disini 
   call winfnt("Courier New Bold")
-  call titlin( "Interpolated function", 3); 
+  call titlin( "Interpolated functions", 3); 
   call graf(xmin, xmax, xmin, (xmax-xmin)/10, ymin, ymax, ymin, (ymax-ymin)/10) 
-  call color("white");  call curve( xp, I_N(0,:), M+1)
+  call color("blue");  call curve( xp, I_N_f(0,:), M+1)
+  call color("red");  call curve( xp, I_N_g(0,:), M+1)
   call incmrk(-1);  call marker(21);
-  call color("red"); call curve( x, f, N+1)
+  call color("white"); call curve( x, f, N+1)
+  call color("white"); call curve( x, g, N+1)
   call color("white"); call height(80);call title 
+  call plot_legends( [ "f", "g" ] ) 
   call disfin
   
   call disini 
@@ -121,7 +415,6 @@ subroutine plot1
   call color("blue");  call curve( xp, PI_N(2,:), M+1)
   call color("white"); call height(80);  call title 
   call disfin
- 
   
   call disini 
   call winfnt("Courier New Bold")
@@ -137,11 +430,11 @@ subroutine plot1
   call winfnt("Courier New Bold")
   
   call titlin( "Interpolation Error", 3) 
-  call setscl(Error, M+1, "y") 
+  call setscl(Error_fe, M+1, "y") 
   call graf(xmin, xmax, xmin, (xmax-xmin)/10, ymin, ymax, ymin, (ymax-ymin)/10 ) 
-  call curve( xp, Error(0,:), M+1)
-  call color("red"); call curve( xp, Error(1,:), M+1)
-  call color("blue");  call curve( xp, Error(2,:), M+1)
+  call curve( xp, Error_fe(0,:), M+1)
+  call color("red"); call curve( xp, Error_fe(1,:), M+1)
+  call color("blue");  call curve( xp, Error_fe(2,:), M+1)
   call incmrk(-1);  call marker(21);
   call color("white"); call curve( x, f-f, N+1)
   call color("white"); call height(80);  call title 
@@ -153,48 +446,128 @@ end subroutine
 end subroutine 
  
 
-
-
-
-
-
-
-
 !***********************************************************
 !* Milestone 2B  
 !***********************************************************
 subroutine Milestone2B  
  
  integer, parameter :: N=4, M=400 
- real :: x(0:N), f(0:N)    ! N+1 given points
-                           ! M+1 interpolated points 
- real :: I_N(0:N, 0:M), P_N(2, 0:M), fe(0:M), Error(2, 0:M) 
- real :: xp(0:M), a=-1, b=1, theta(0:N)
- real :: c1(0:N), c2(0:N), PI = 4 * atan(1d0) 
- integer :: i, k  
+ real :: x(0:N), f(0:N), g(0:N)    ! N+1 given points
+                                   ! M+1 interpolated points
  
- theta  = [ (PI*i/N, i=0, N) ]
- x = -cos( theta ) 
+ real :: I_N_f(0:N, 0:M), fe(0:2, 0:M), Error_fe(0:2, 0:M), P_N_f(2, 0:M) !f funciton
+ real :: I_N_g(0:N, 0:M), ge(0:2, 0:M), Error_ge(0:2, 0:M), P_N_g(2, 0:M) !g funciton
+ 
+ real :: xp(0:M), a=-1, b=1, theta(0:N)
+ real :: c1_f(0:N), c1_g(0:N), c2(0:N), PI = 4 * atan(1d0) 
+ integer :: i, k  
+  
+ write(*,*) " =============================================================== " 
+ write(*,*) " =============== You have selected Milestone 2B ================ " 
+ write(*,*) " =============================================================== " 
+ write(*,*) " "
+ write(*,*) " Press enter "
+ read(*,*) 
+ write(*,*) " "
+ 
+ ! ============================= Puntos de interpolación =============================
+ 
+ ! Nos dirán: Interpolación polinómica global a partir de los puntos interpolación siguientes:
+ ! Vendrá expresado con una expresión tal que x_j = ...
+ ! Ahí necesitamos meter la expresión que sea, es muy común cos(...)
+ 
+ ! Aquí en theta el argumento de dicho cos(...)
+ ! Pueden jugar con llamarlos de las diferentes maneras comentadas más abajo
+ ! Pueden pedirnos un valor para una theta distinta a la dada para un sólo apartado
+    
+ theta  = [ (PI*i/N, i=0, N) ] !Chebyshev - Gauss - Lobato (extremos)
+ 
+ !theta = [ ((2*i+1)*PI/(2*N+2), i=0, N) ] !Chebyshev - Gauss (ceros)
+ 
+ !theta = [((2*PI*(1+p1)*i)/(2*N*(1+p1)+p2), i = 0, N)]
+ 
+ !theta = [((2*PI*i)/(2*N+1), i = 0,N)]
+ 
+ ! Puede no ser cos(...) pero bueno, es lo más normal.
+ ! Como contra ejemplo está el Hito 1 (distribución de puntos comentada a continuación)
+ 
+ !x  = [ (a + (b-a)*i/N, i=0, N) ] ! N+1 points
+ 
+ x = cos( theta ) 
+ 
+! También puede ser una función a trozos
+! do i = 0,N
+!  if(i>N/2) then
+!  xi = a + (b-a)*i/N
+!  else
+!  xi = a + ((b-a)*i/N)**2
+!  end if
+!  x(i) = xi
+! end do
+! 
+!write(*,*) "A trozos: x = ", x
+ 
+ !!  ============================= Expresión xp (NO TOCAR) ============================= 
+  
  xp = [ (a + (b-a)*i/M, i=0, M) ] ! M+1 points
  
- fe = cos( PI * xp )  
- f = cos ( PI * x ) 
- I_N = Interpolant(x, f, N, xp) 
  
- c1 = Chebyshev_transform(f) 
- P_N(1, :) = Chebyshev_interpolant( c1, xp ) 
+ !!  ============================= Funciones a estudiar =============================
+ 
+ f = 1/( 1 + 25*x**2) 
+ !fe= 1/( 1 + 25*xp**2)
+ g = sin ( PI * x ) 
+ !ge = sin ( PI * xp ) 
+ 
+ 
+ 
+ !! ============================= Interpolantes =============================
+  
+ I_N_f = Interpolant(x, f, N, xp)
+ I_N_g = Interpolant(x, g, N, xp)
+ 
+ 
+ 
+ !!  ============================= Funciones y derivadas =============================
+ 
+ ! Spoiler, esto no nos hace falta, sólo vamos a necesitar fe(0,:) y ge(0,:)
+ ! En ningún examen de este año 2022/23 ha hecho falta.
+ 
+ fe(0,:)  = 1/( 1 + 25*xp**2) 
+ !fe(1,:) =  -50 * xp / (1 + 25*xp**2)**2  
+ !fe(2,:) =  -50  / (1 + 25*xp**2)**2  +(50 * xp)**2 / (1 + 25*xp**2)**2  
+ 
+ ge(0,:) =  sin ( PI * xp ) 
+ !ge(1,:) =  PI * cos ( PI * xp )
+ !ge(2,:) =  -PI**2 * sin ( PI * xp ) 
+ 
+ Error_fe = fe - I_N_f(0:2, :)
+ Error_ge = ge - I_N_g(0:2, :) 
+ 
+ 
+ 
+
+ 
+ c1_f = Chebyshev_transform(f) 
+ P_N_f(1, :) = Chebyshev_interpolant( c1_f, xp ) 
+ 
+ c1_g = Chebyshev_transform(f) 
+ P_N_g(1, :) = Chebyshev_interpolant( c1_g, xp ) 
  
  c2 = 0
  do k=0, N, 2 
      c2(k) = c_hat(k/2) 
  end do 
- P_N(2, :) = Chebyshev_interpolant( c2, xp ) 
  
-  Error(1,:) = fe - I_N(0,:)
-  Error(2,:) = fe - P_N(2,:)
+ P_N_f(2, :) = Chebyshev_interpolant( c2, xp ) 
+ 
+  Error_fe(1,:) = fe(0,:) - I_N_f(0,:)
+  Error_fe(2,:) = fe(0,:) - P_N_f(2,:)
 !  Error(1,:) = fe - P_N(1,:) 
 
- 
+ write(*,*) " "
+ write(*,*) " ======================== Plot results ========================= "
+ write(*,*) " "
  write(*,*) " Plot results of milestone 2B " 
  write(*,*) " press enter "
  read(*,*) 
@@ -259,8 +632,8 @@ subroutine plot_milestone2B
   
   call disini 
   call graf(xmin, xmax, xmin, (xmax-xmin)/10, ymin, ymax, ymin, (ymax-ymin)/10) 
-  call color("white");  call curve( xp, I_N(0,:), M+1)
-  call color("blue");   call curve( xp, P_N(1,:), M+1)
+  call color("white");  call curve( xp, I_N_f(0,:), M+1)
+  call color("blue");   call curve( xp, P_N_f(1,:), M+1)
  ! call color("red");  call curve( xp, P_N(2,:), M+1)
  ! call color("orange");  call curve( xp, fe, M+1)
   
@@ -273,10 +646,10 @@ subroutine plot_milestone2B
   call disfin
    
   call disini 
-  call setscl(Error, M+1, "y") 
+  call setscl(Error_fe, M+1, "y") 
   call graf(xmin, xmax, xmin, (xmax-xmin)/10, ymin, ymax, ymin, (ymax-ymin)/10) 
-  call color("blue");  call curve( xp, Error(1,:), M+1)
-  call color("red");   call curve( xp, Error(2,:), M+1)
+  call color("blue");  call curve( xp, Error_fe(1,:), M+1)
+  call color("red");   call curve( xp, Error_fe(2,:), M+1)
   
   call incmrk(-1);  call marker(21);
   call color("white"); call curve( x, f-f, N+1) 
@@ -292,8 +665,15 @@ end subroutine
 end subroutine 
 
 
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
+                         !!!!!!!! !!!!!!!! !!!!!!!!!
+                         !!    !! !!          !!
+                         !!!!!!!! !!!!!       !!
+                         !!       !!          !!
+                         !!       !!!!!!!! !!!!!!!!!
 
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 
 !***********************************************************
@@ -301,19 +681,160 @@ end subroutine
 !***********************************************************
 subroutine Milestone3
  
- integer, parameter ::  M=1000
- real ::  xp(0:M)
- real, allocatable :: x(:), y(:), PI_N(:, :), Lebesgue_N(:,:) 
- real :: a=-1, b=1, PI = 4 * atan(1.) 
- integer :: i, k, N   
- 
- 
-write(*,*) " Plot results of milestone 3 " 
-write(*,*) " press enter "
-read(*,*) 
- 
-xp = [ (a + (b-a)*i/M, i=0, M) ] ! M+1 points
+integer, parameter :: M = 200
+integer, parameter :: N1 = 2, N2 = 4 !N1 y N2 como q1 y q2 (recordemos que es para q+1 puntos)
+integer :: j, i
+real :: x1(0:N1), x2(0:N2), xp(0:M)
+real :: a = -1, b = 1
+real :: k
 
+real :: chosen_xp
+real :: tol 
+
+
+
+real, allocatable :: x(:), y(:), PI_N(:, :), Lebesgue_N(:,:) 
+! real :: PI = 4 * atan(1.) 
+ integer :: N, plot_option 
+         
+
+real :: Leb3(-1:N1, 0:M), Leb5(-1:N2, 0:M)
+real :: PI3(0:N1,0:M), PI5(0:N2,0:M)
+         
+ write(*,*) " =============================================================== " 
+ write(*,*) " =============== You have selected Milestone 3 ================= " 
+ write(*,*) " =============================================================== " 
+ write(*,*) " "        
+         
+do j = 0, N1
+             
+     k = j
+     x1(j) = a + (b - a)*k/N1
+            
+end do
+         
+do j = 0, N2
+             
+     k = j
+     x2(j) = a + (b - a)*k/N2
+            
+end do
+
+xp = [ (a + (b-a)*i/M, i=0, M) ] ! M+1 points
+           
+! Funciones lebesgue
+           
+Leb3 = Lebesgue_functions(x1,xp)
+Leb5 = Lebesgue_functions(x2,xp)
+        
+! Funciones de error PI
+        
+PI3 = PI_error_polynomial(x1,xp)
+PI5 = PI_error_polynomial(x2,xp)
+
+
+        
+write(*,*) " ============== PI' with q= 2 ============== "
+write(*,*) " "
+do j = 0, M
+     write(*,*) xp(j), PI3 (1, j)
+end do
+
+write(*,*) " "
+
+write(*,*) " ============== PI'' with q= 2 ============== "
+write(*,*) " "
+do j = 0, M
+     write(*,*) xp(j), PI3 (2, j)
+end do
+
+write(*,*) " "
+
+write(*,*) " ============== PI' with q= 4 ============== "
+write(*,*) " "
+do j = 0, M
+     write(*,*) xp(j), PI5 (1, j)
+end do
+
+write(*,*) " "
+
+write(*,*) " ============== PI'' with q= 4 ============== "
+write(*,*) " "
+do j = 0, M
+     write(*,*) xp(j), PI5 (2, j)
+end do
+
+write(*,*) " "
+
+write(*,*) " ============== Lebesgue' with q= 2 ============== "
+write(*,*) " "
+do j = 0, M
+     write(*,*) xp(j), Leb3 (1, j)
+end do
+
+write(*,*) " "
+
+write(*,*) " ============== Lebesgue'' with q= 2 ============== "
+write(*,*) " "
+do j = 0, M
+     write(*,*) xp(j), Leb3 (2, j)
+end do
+
+write(*,*) " "
+
+write(*,*) " ============== Lebesgue' with q= 4 ============== "
+write(*,*) " "
+do j = 0, M
+     write(*,*) xp(j), Leb5 (1, j)
+end do
+
+write(*,*) " "
+
+write(*,*) " ============== Lebesgue'' with q= 4 ============== "
+write(*,*) " "
+do j = 0, M
+     write(*,*) xp(j), Leb5 (2, j)
+end do
+
+! Esto por si nos piden para un xp en concreto y no queremos buscarlo a mano, podemos meter una M enorme y modificar la función elegida:
+
+! PI' with q = 2 ---> xp(j), PI3 (1, j) 
+! PI'' with q = 2 ---> xp(j), PI3 (2, j)
+! PI' with q = 4 ---> xp(j), PI5 (1, j) 
+! PI'' with q = 4 ---> xp(j), PI5 (2, j)
+
+! Leb' with q = 2 ---> xp(j), Leb3 (1, j) 
+! Leb'' with q = 2 ---> xp(j), Leb3 (2, j)
+! Leb' with q = 4 ---> xp(j), Leb5 (1, j) 
+! Leb'' with q = 4 ---> xp(j), Leb5 (2, j)
+
+! No olvidar meter una M grande xd (si no, no habrá un punto xp dentro de la tolerancia, aunque podemos cambiarla como es lógico)
+! Es una manera cutre de hacerlo de momento que vea si hay alguna función que lo haga o lo piense de otra manera
+
+chosen_xp = 0.982362
+tol = 1.0e-7  
+
+write(*,*) " "
+write(*,*) " ============== PI' with q= 2 for chosen xp ============== "
+write(*,*) " "
+write(*,*) " xp =  ", chosen_xp
+write(*,*) " "
+
+do j = 0, M
+     if (abs(xp(j) - chosen_xp) < tol) then
+          write(*,*) xp(j), PI3 (1, j)
+     end if
+end do
+
+
+write(*,*) " ================== Plot? 1.Yes 2.No ==================== "
+write(*,*) " "
+
+read(*,*) plot_option
+
+select case(plot_option)
+
+case(1)
 
 do N=2, 8, 2 
       
@@ -357,7 +878,7 @@ do N=2, 4, 2
    Lebesgue_N = Lebesgue_functions( x, xp ) 
    
    call color("white");  call marker(0); call incmrk(0) 
-   call curve(xp, Lebesgue_N(0,:), M+1 )
+   call curve(xp, Lebesgue_N(0,:), M+1 ) 
    
    call color("red");  call marker(0); call incmrk(0) 
    call curve(xp, Lebesgue_N(1,:), M+1 )
@@ -374,8 +895,10 @@ do N=2, 4, 2
    call disfin
    
 end do 
- 
- 
+
+case(2) 
+    end select
+
 end subroutine 
 
 
@@ -386,74 +909,79 @@ end subroutine
 !*****************************************************************
 subroutine Milestone4
  
- integer :: q                      ! interpolant order 2, 4, 6, 8 
- integer :: Nq = 6                 ! max interpolant order 
- integer :: N                      ! # of nodes (piecewise pol. interpol.) 
- integer :: k = 2                  ! derivative order 
- integer :: p = 0                  ! where error is evaluated p=0, 1,...N
- integer, parameter :: M = 100     ! number of grids ( N = 10,... N=10**4) 
- real :: epsilon = 1d-12           ! order of the random perturbation 
- 
- real :: PI = 4 * atan(1d0), logN  
- integer ::  j, l
- 
- real, allocatable :: x(:), f(:), dfdx(:)       ! function to be interpolated 
- real, allocatable :: dIdx(:)                   ! derivative of the interpolant 
- real, allocatable :: log_Error(:,:),log_dx(:)  ! Error versus Dx for q=2, 4, 6, 8
- character(len=40) :: title 
- 
- 
- write(*,*) "Second derivative error versus spatial step for q=2,4,6,8 " 
- write(*,*) " Test function:  f(x) = cos pi x  " 
- write(*,*) " press enter "
- read(*,*) 
- 
-    
- 
-do k=1, 2 
- allocate(  log_Error(M,4), log_dx(M)   )  
- log_dx = 0; log_Error = 0   
 
- l = 0 
- do q=2, Nq, 2 
-  l = l +1    
-  do j=1, M 
-     
-   logN = 1 + 3.*(j-1)/(M-1)   
-   N = 2*int(10**logN)
-   
-   allocate( x(0:N), f(0:N),  dfdx(0:N), dIdx(0:N)   ) 
-   x(0) = -1; x(N) = 1 
+integer, parameter :: N = 5, M = 1000 , Order = 2
+! Cambiar N para la variación de x (Ax), si [0,1] y quieres Ax = 0.1, N = 10 // q te lo dan o te dan el nº de puntos = q+1
+real :: x(0:N), xp(0:M), u(0:N), uxk(0:N,2), ErrorUxk(0:N, 2), error_pi(0:N,0:M), Lebesgue_N(-1:N, 0:M), uxk_analytic(0:N, 2), uplot(0:N,2)
+real :: x0 = 0, xf = 1 !Intervalo de estudio, hay cambiarlo al que digan
+integer :: i
+real :: pi = 4 * atan(1.0)
+real:: p1, p2
+
+
+p1 = 0.722973272880877       
+p2 = 6.447827978090080E-002
+
+write(*,*) " "
+write(*,*) " p1 = ", p1
+write(*,*) " p2 = ", p2
+write(*,*) " "
+
+ write(*,*) " =============================================================== " 
+ write(*,*) " =============== You have selected Milestone 4 ================= " 
+ write(*,*) " =============================================================== " 
  
-   call Grid_Initialization( "uniform", "x", x, q ) 
-   
-   call random_number(f)
-   f = cos ( PI * x ) + epsilon * f
-   if (k==1) then 
-       dfdx = - PI * sin ( PI * x ) 
-       title = " First derivative "
-   elseif (k==2) then 
-       dfdx = - PI**2 * cos ( PI * x ) 
-        title = " Second derivative "
-   end if 
-   
-   call Derivative( "x", k, f, dIdx )
-   
-   log_dx(j) = log( x(1) - x(0) ) 
-   log_Error(j, l) = log( abs(dIdx(p) - dfdx(p)) )    
  
-   deallocate( x, f, dIdx, dfdx ) 
-  end do 
- end do  
+    x = [ (x0 + (xf-x0)*i/N, i=0, N) ]
+    
+    xp = [ (x0 + (xf-x0)*i/M, i=0, M) ]
+    
+    !!! MUCHISIMO OJO A ESTO NON VS UNIFORM GRID !!!
+    call Grid_Initialization( "uniform", "x", x, Order ) ! uso uniform en el examen
+    !call Grid_Initialization( "nonuniform", "x", x, Order )
+    
+    u = EXP(x) / (p1*x**2 + 1.0)
+    !u = cosh(x) ! Funcion
+    !u = cos(PI*x)
+    
+     uxk_analytic(0:N, 1) = (p1*x**2 - 2.0*p1*x + 1.0) * EXP(x) / ((p1*x**2 + 1.0)**2) ! Primera derivada
+     uxk_analytic(0:N, 2) = (p1**2*x**4 - 4.0*p1**2*x**3 + (6.0*p1**2 + 2.0*p1)*x**2 - 4.0*p1*x - 2.0*p1 + 1.0) * EXP(x) / ((p1*x**2 + 1.0)**3)
+    
+    
+    !uxk_analytic(0:N, 1) = sinh(x) ! Primera derivada
+    !uxk_analytic(0:N, 2) = cosh(x) ! Segunda derivada
+    !uxk_analytic(0:N, 1) = -PI*sin(PI*x) ! Primera derivada
+    !uxk_analytic(0:N, 2) = -PI*PI*cos(PI*x) ! Segunda derivada
+    
+    !!!!!!!!!!!!!! NORMAL !!!!!!!!!!!!!!!!!!!
+    call Derivative( 'x' , 1 , u , uxk(:,1) )
+    call Derivative( 'x' , 2 , u , uxk(:,2) )
+    ErrorUxk (:,1) = uxk_analytic(:, 1) - uxk(:,1) ! Ojo con el orden para el signo
+    ErrorUxk (:,2) = uxk_analytic(:, 2) - uxk(:,2) ! Ojo con el orden para el signo
+    
+    !!!!! lebesgue and pi errors
+    Lebesgue_N = Lebesgue_functions( x, xp ); error_pi = PI_error_polynomial( x,xp )
+    !write(*,*) x
+    write (*, *) 'Finite differences formulas: ',Order,'th order '
+    write (*, '(A, F6.4)') ' Espaciado: ',x(2)-x(1)
+    
+      !!!! DERIVADAS SEGUNDA !!!!!
+    write(*,*) " =================== DERIVADAS SEGUNDAS =================== "
+    write(*,*) " "
+    write(*,*) "Error 2a derivada f en", x(N/2),"=", ErrorUxk (N/2,2)
+    write(*,*) "Error 2a derivada f en", x(N),"=", ErrorUxk (N,2)
+    write(*,*) " "
+    
+    !!!! DERIVADAS PRIMERAS !!!!!
+    write(*,*) "=================== DERIVADAS PRIMERAS =================== "
+    write(*,*) " "
+    write(*,*) "Error 1a derivada f en", x(N/2),"=", ErrorUxk (N/2,1) !Aqui cambias para valores que te pidan (N/2,1), (N/10,1),...
+    write(*,*) "Error 1a derivada f en", x(N),"=", ErrorUxk (N,1)
+  
  
- call scrmod("reverse")
- call plot_parametrics( log_dx, log_Error, ["Error q=2", "Error q=4", "Error q=6"], & 
-                       "log_dx","log_Error", title)
- 
- deallocate( log_Error, log_dx ) 
-end do 
  
 end subroutine 
+
 
 
 
@@ -462,31 +990,93 @@ end subroutine
 !*****************************************************************
 subroutine Milestone5
 
-    integer, parameter :: N = 40,  Nv = 1, Np = 3
-    real :: x(0:N), U(0:N,Nv,Np)
-    real :: x0 = -1 , xf = 1
-    integer :: i, p 
-    real :: pi = 4*atan(1.) 
-   
-    write (*, *) 'Milestone5: Solution of boundary value problems ' 
-    write (*, *) ' yxx + exp(-x**2)  yx + - y = 100 sin( pi x) sin(5 pi x) ' 
-    write (*, *) ' y(-1) = 0, dydx(+1) = 0 '
-    write(*,*) " press enter "
-    read(*,*) 
-      
+
+    integer, parameter :: N = 100  ! Numero de puntos = (N+1)
+    integer, parameter :: p = 2   ! p = q = orden
     
- x(0) = x0; x(N) = xf  
- do p=1, Np 
-    call Grid_Initialization( grid_spacing = "nonuniform", &
-                              direction = "x",   q = 2*p, nodes = x )
+    integer, parameter ::  Nv = 1, Np = 3
+    real :: x(0:N), U(0:N,Nv,Np)
+    real :: x0 = 0 , xf = 1 !Intervalo de estudio
+    integer :: i, last
+    real :: PI = 4*atan(1.) 
+    
+    real, parameter :: analytical_solution = 0.7634647823
+    
+    ! Para analizar el error primero tenias que sacar una solucion numerica muy
+    ! precisa (N muy grande y q=6 por ejemplo)
+    ! Una vez tenias una solucion muy precisa, la tomabas como si fuera la
+    ! solucion analitica, y hacias los errores con ella
+    
+    
+    write(*,*) " =============================================================== " 
+    write(*,*) " =============== You have selected Milestone 5 ================= " 
+    write(*,*) " =============================================================== " 
+    write(*,*) " "
+    write(*,*) " Solution of boundary value problems "
+    write(*,*) " "
+    !write(*,*) " y_xx + exp(-x**2) * y_x + - y = 100 * sin(pi*x) * sin(5*pi*x) " 
+    !write(*,*) " y(-1) = 0 "
+    !write(*,*) " y_x(+1) = 0 "
+    !write(*,*) " "
+    write(*,*) " Press any key to continue "
+    write(*,*) " "
+    read(*,*) 
+    write(*,*) " =============================================================== " 
+    write(*,*) " "
+    
+    write(*,*) " N = ", N
+    
+    
+    
+    x(0) = x0; x(N) = xf  
+
+    !call Grid_Initialization( grid_spacing = "nonuniform", &
+    !                         direction = "x",   q = p, nodes = x )
+    
+    call Grid_Initialization( grid_spacing = "uniform", &
+                             direction = "x", q = p, nodes = x )
 !   Legendre solution   
     call Boundary_Value_Problem( x = x,                                & 
                                  Differential_operator = ODES,     & 
                                  Boundary_conditions   = BCs, & 
-                                 Solution = U(:,:,p) )
- end do 
+                                 Solution = U(:,:,Np) )
  
-call plot(x, transpose(U(:,1,:)),"Milestone5. BVP with order q=2,4,6"  )  
+ 
+! call plot(x, transpose(U(:,1,:)),"Milestone5. BVP with order q"  )  
+    
+    write(*,*) " =============================================================== " 
+    write(*,*) " "
+    
+do i=0,N
+   
+    last = SIZE(U, DIM=3)
+    write(*,*) " x =", x(i), " U(x) =", U(i,1,last)
+
+enddo
+ 
+write(*,*) " "
+write(*,*) " =============================================================== " 
+write(*,*) " ========== Otras preguntas que pueden hacer en examenes ======= "
+write(*,*) " =============================================================== " 
+write(*,*) " "
+write(*,'(A, F6.4)') " Distancia entre puntos (Delta_x): ", x(3)-x(2)
+write(*,*) " "
+write(*,*) " Valores para puntos en concreto en función de N "
+write(*,*) " "
+write(*,*) " x =", x(N/2), " U(x) =", U(N/2,1,last) ! Realmente es más fácil ver la tabla completa que pararse a pensar que N es
+write(*,*) " x =", x(0), " U(x) =", U(0,1,last)
+write(*,*) " "
+write(*,*) " analytical_solution = ", analytical_solution
+write(*,*) "              U(N/2) = ", U(N/2,1,last)
+write(*,*) " "
+write(*,*) " Error at U(N/2) = ", abs(analytical_solution - U(N/2,1,last))
+write(*,*) " "
+write(*,*) " Recuerda cambiar el parametro 'analytical_solution' para sacar el error "
+
+! Para analizar el error primero tenias que sacar una solucion numerica muy
+! precisa (N muy grande y q=6 por ejemplo)
+! Una vez tenias una solucion muy precisa, la tomabas como si fuera la
+!solucion analitica, y hacias los errores con ella
  
 contains 
 
@@ -495,22 +1085,50 @@ contains
 function ODES(x, y, yx, yxx) result(L)
    real, intent(in) :: x, y(:), yx(:), yxx(:)   
    real :: L(size(y)) 
+   real :: PI = 4*atan(1d0)
+
+     
+   L = yxx + yx + 10*y
    
-    integer :: n = 6
-        
-    L =  yxx + exp(-x**2) * yx - y - 100*sin(pi*x) * sin(5*pi*x)
+    !L =  yxx + exp(-x**2) * yx - y - 100*sin(PI*x) * sin(5*PI*x)
+    !L = p1*yxx + yx + sin(10*p2*x)*y-cos(20*p1*x) !Metes la funcíon de tu enunciado poniendo todo a un lado de la ecuación
+    !L = yxx + yx +30*y-30*sin(PI*x)
+    !L = yxx + yx + 10*y
+    !L = y*yxx-(yx)**2-1.0
+    !L = yxx + exp(-x**2) * yx - y - 100*sin(pi*x) * sin(5*pi*x)
        
 end function 
     
 !********* Boundary conditions *********
 function BCs(x, y, yx) 
-           real, intent(in) :: x, y(:), yx(:)   
+           real, intent(in) :: x, y(:), yx(:)  
            real :: BCs(size(y))
+           
+         
+          ! Aquí metemos nuestras condiciones de controno en xo y xf
+           
+          !BCs = yx - 0    Cuando u' = 0
+                           
+          !BCs = y - 1     Cuando u = 1
+           
+          !BCs = y - 1     Cuando u = 1
+                           
+          !BCs = yx - p1   Cuando u' = p1
+           
+          ! El que sea que pidan tanto en xo como en xf
+           
+           
 
         if (x==x0) then
-                           BCs = y
+                           BCs = yx - 1
+                           
+                           !BCs = y - 1     Cuando u(x0) = 1
+                           
+                           !BCs = yx - p1   Cuando u'(x0) = p1
+                           
         else if (x==xf ) then
-                           BCs = yx                    
+            
+                           BCs = y - 0                   
         else 
             write(*,*) " Error BCs x=", x; stop  
         endif            
@@ -520,38 +1138,93 @@ end function
 end subroutine 
 
 
+
+
 !********************************************************************
 !* Milestone6
 !*****************************************************************
 subroutine Milestone6
 
-   integer, parameter :: N = 1000, Nv=2, Np=2
-   real :: Time(0:N), U(0:N, Nv, Np) 
+   integer, parameter :: N = 100 !Time steps
+   integer, parameter :: Nv=2, Np=2
+   real :: Time(0:N), U(0:N, 2) !U(0:N, Nv, Np) 
+   
    real :: a=10., b=28., c=2.6666666666
-   real :: t0 =0, tf=25 
-   integer :: i, p 
- 
+   real :: t0 = 0, tf = 1, analytical_solution 
+   integer :: i, p, last
+
+
+   
+   write(*,*) " =============================================================== " 
+   write(*,*) " =============== You have selected Milestone 6 ================= " 
+   write(*,*) " =============================================================== " 
+   write(*,*) " "
+   
    Time = [ (t0 + (tf -t0 ) * i / (1d0 * N), i=0, N ) ]
+   
+   !Condiciones iniciales
+   U(0,1) = 6 ! Funcion
+   U(0,2) = 0 ! Derivada
+   
+   analytical_solution = 0.82327323
   
-   do p=1, Np  
-    U(0,:, p) = [0, 1]
-    if (p==1) then    
+   ! Poner en Scheme el que te pida:
+   ! Adams_Bashforth2
+   ! Euler
+   ! Crank_Nicolson
+   ! Runge_Kutta4
+   ! Inverse_Euler
+     
         call Cauchy_ProblemS( Time_Domain=Time, Differential_operator=ODE, & 
-                              Solution = U(:,:,p), Scheme = Euler )
-    else if (p==2) then 
-        call Cauchy_ProblemS( Time_Domain=Time, Differential_operator=ODE, & 
-                              Solution = U(:,:,p), Scheme = Runge_Kutta4 )
-    end if 
+                              Solution = U, Scheme = Runge_Kutta4 )    
+
+      write(*,*) " "
+      write(*,*) " ================= RECUERDA CAMBIAR EL SCHEME! ================= "
+      
+      write(*,*) " Función "
+      write(*,*) " "
+      do i=0,N
+      write(*,*) " t = ", Time(i), " x'(t) =", U(i,1), " N =", i 
+      enddo
+      write(*,*) " "  
+      write(*,*) " Derivada "
+      write(*,*) " "
+      do i=0,N
+      write(*,*) " t = ", Time(i), " x(t) =", U(i,2), " N =", i 
+      enddo
+      write(*,*) " "  
         
-   end do 
-    
-   write (*, *) 'Solution of Milestone 6  '  
-   write(*,*) " press enter "
-   read(*,*) 
-   call plot_parametrics(Time, U(:,1,:), ["Euler", "RK4"],"t","x", "Milestone6: Cauchy problem with different time schemes")
-   
-   call Stability_regions_Euler_RK4  
-   
+!write(*,*) " =============================================================== " 
+!write(*,*) " ========== Otras preguntas que pueden hacer en examenes ======= "
+!write(*,*) " =============================================================== " 
+!write(*,*) " "
+!write(*,'(A, F6.4)') " Distancia entre tiempos (Delta_t): ", Time(4)-Time(3)
+!write(*,*) " "
+!write(*,*) " Valores para tiempos en concreto en función de N "
+!write(*,*) " "
+!write(*,*) " t =", Time(N/2), " x(t) =", U(N/2,1) ! Realmente es más fácil ver la tabla completa que pararse a pensar que N es
+!!write(*,*) " t =", Time(0), " x(t) =", U(0,1)
+!!write(*,*) " t =", Time(81), " x(t) =", U(81,1) ! t =    2.02500000000000       x(t) =   1.27086609773014       N =          81
+!write(*,*) " "
+!write(*,*) " analytical_solution = ", analytical_solution
+!write(*,*) "              x(N/2) = ", U(N/2,1)
+!write(*,*) " "
+!write(*,*) " Error at t=(N/2) = ", abs(analytical_solution - U(N/2,1))
+!write(*,*) " "
+!write(*,*) " raiz(U**2+dU**2) =", sqrt(U(N/10,1)**2+U(N/10,2)**2) !Esto era un ej de un exámen
+!write(*,*) " "
+!write(*,*) " Valores de la derivada para tiempos en concreto en función de N "
+!write(*,*) " "
+!write(*,*) " t =", Time(0), "x'(t) =", U(0,2)
+!write(*,*) " "
+!write(*,*) " Recuerda cambiar el parametro 'analytical_solution' para sacar el error "
+!
+
+
+!   call plot_parametrics(Time, U(:,1,:), ["Euler", "RK4"],"t","x", "Milestone6: Cauchy problem with different time schemes")
+!   
+!  call Stability_regions_Euler_RK4  
+!   
 contains
 
 function ODE(U, t) result(F)           
@@ -562,7 +1235,16 @@ function ODE(U, t) result(F)
       
      x = U(1); dxdt = U(2);   
 
-     F = [ dxdt, cos( 2*t ) - sin(x) ]
+     !F = [ dxdt, cos( 2*t ) - sin(x) ]  !Lo mismo que lo de abajo, primer término no se toca, el segundo términio es despejar u_xx
+     
+     !U(1) son las x,u (Funcion)
+     !U(2) son las xpunto,upunto (Derivadas)
+     
+     F(1) = U(2) !ESTO NUNCA SE TOCA
+       
+     !F(2) = -0*U(2)-10*U(1)        !Esto pones a un lado uxx y al otro todo lo demás
+     !F(2) = cos(2*t) - sin(U(1))
+     F(2) = -U(2)-10*U(1) 
      
 
  end function
@@ -594,8 +1276,8 @@ subroutine Stability_regions_Euler_RK4
      call plot_contour(x, y, Region, "Re(z)","Im(z)", levels, graph_type ="isolines"   )  
    end do 
    
-
 end subroutine 
+
 
 
 
@@ -613,6 +1295,10 @@ subroutine Milestone7
        integer, parameter :: Nl = 5 
        character(len=10) :: legends(0:Nl) 
      
+       write(*,*) " =============================================================== " 
+       write(*,*) " =============== You have selected Milestone 7 ================= " 
+       write(*,*) " =============================================================== " 
+       write(*,*) " "
        
      write (*, '(A50)') 'Milestone 7: Time solution of the 1D heat equation'
      write(*,*) " press enter "
@@ -640,9 +1326,14 @@ subroutine Milestone7
      call Error_Heat1D
    
 
-end subroutine 
+     end subroutine 
 
-
+     
+     
+     
+!********************************************************************
+!* Functions
+!*****************************************************************
 function Heat_equation1D( x, t, u, ux, uxx) result(F)
           real, intent(in) ::  x, t, u(:), ux(:), uxx(:)
           real :: F( size(u) ) 
