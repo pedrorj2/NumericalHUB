@@ -1,3 +1,21 @@
+<h1 align="center">Hi 👋, I'm Pedro</h1>
+<h3 align="center">an average ETSIAE student</h3>
+
+<br>
+
+- 🤝 I’m trying to help with the understanding on [NumericalHUB](https://github.com/jahrWork/NumericalHUB)
+
+- 📫 How to reach me: **pedro.rjimenez@alumnos.upm.es**
+
+- 🎯 This is just a fork of the original with explanations for easier understanding of the Milestones.
+
+<p align="center"> <img src="https://komarev.com/ghpvc/?username=pedrorj2&label=Profile%20views&color=0e75b6&style=flat" alt="pedrorj2" /> </p>
+
+<br>
+
+
+<h1 align="center">Original README</h1>
+
 
 # NumericalHUB  [Amazon book](https://www.amazon.es/Applied-Mathematics-through-modern-FORTRAN/dp/B0851LN6HT/) [PDF](https://github.com/jahrWork/NumericalHUB/tree/master/doc/NumericalHUB_Jan_2022.pdf)
 
