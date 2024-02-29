@@ -33,30 +33,53 @@ program main_NumericalHUB
 contains 
     
 subroutine main
-integer :: option  
+integer :: option 
+real :: p1,p2
       
 option = 1        
 do while (option>0) 
-    
-     write(*,*) "Welcome to NumericalHUB" 
-     
-     write(*,*) " select an option " 
-     write(*,*) " 0. Exit/quit  "
-     write(*,*) " 1. Systems of equations  "
-     write(*,*) " 2. Lagrange interpolation  " 
-     write(*,*) " 3. Finite difference   "
-     write(*,*) " 4. ODE Cauchy problems   "
-     write(*,*) " 5. Boundary value problems  "
-     write(*,*) " 6. Initial-boundary value problems  "
-     write(*,*) " 7. Mixed problems: IBVP+BVP  "
+     write(*,*) " =============================================================== " 
+     write(*,*) " =========== Welcome to NumericalHUB ft. @aeropedrax =========== " 
+     write(*,*) " ==================== This is NumericalHUB+ ==================== " 
+     write(*,*) " =============================================================== "
+     write(*,*) "  "
+     write(*,*) "                            DISCLAIMER:                          "
+     write(*,*) "     This is a non-profit remake of the original NumericalHUB    "
+     write(*,*) "           Original one is avalible in @jahrWork Github          "
+     write(*,*) "             https://github.com/jahrWork/NumericalHUB            "
+     write(*,*) " "
+     write(*,*) " =============================================================== "
+     write(*,*) " ====================== Select an option: ====================== " 
+     write(*,*) " =============================================================== "
+     write(*,*) " "
+     write(*,*) " 0. Exit/quit "
+     write(*,*) " 1. Systems of equations "
+     write(*,*) " 2. Lagrange interpolation " 
+     write(*,*) " 3. Finite difference "
+     write(*,*) " 4. ODE Cauchy problems "
+     write(*,*) " 5. Boundary value problems "
+     write(*,*) " 6. Initial-boundary value problems "
+     write(*,*) " 7. Mixed problems: IBVP+BVP "
      write(*,*) " 8. High order ODE schemes "
-     write(*,*) " 9. Spectral methods and Navier Stokes examples"
-     write(*,*) " 10.My examples "
-     write(*,*) " 11.My milestones "
+     write(*,*) " 9. Spectral methods and Navier Stokes examples "
+     write(*,*) " 10. My examples "
+     write(*,*) " 11. My milestones "
+     write(*,*) " "
+     write(*,*) " =============================================================== " 
+     write(*,*) " "
      
-     read(*,*) option
+     !read(*,*)
+     !read(*,*) option
+
+     !option = 11
+     write(*,*) " "
+
      
      select case(option)
+         
+     case(0)   
+        stop
+         
      case(1) 
          call Systems_of_Equations_examples
          
@@ -93,7 +116,8 @@ do while (option>0)
     case default
           write(*,*) "Case not implemented" 
               
-     end select 
+      end select 
+      
      
 end do
   
