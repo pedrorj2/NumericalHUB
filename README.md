@@ -9,6 +9,8 @@
 
 - 🎯 This is just a fork of the original with explanations for easier understanding of the Milestones.
 
+- 🎥 Video explanation on [YouTube](https://youtu.be/YmN1D4RQuKU)
+
 <p align="center"> <img src="https://komarev.com/ghpvc/?username=pedrorj2&label=Profile%20views&color=0e75b6&style=flat" alt="pedrorj2" /> </p>
 
 <br>
